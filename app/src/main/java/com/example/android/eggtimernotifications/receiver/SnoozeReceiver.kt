@@ -38,7 +38,7 @@ class SnoozeReceiver: BroadcastReceiver() {
             context,
             REQUEST_CODE,
             notifyIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         AlarmManagerCompat.setExactAndAllowWhileIdle(
@@ -48,8 +48,7 @@ class SnoozeReceiver: BroadcastReceiver() {
             notifyPendingIntent
         )
 
-        val notificationManager = ContextCompat.getSystemService(
-            context,
+        val notificationManager = context.getSystemService(
             NotificationManager::class.java
         ) as NotificationManager
         notificationManager.cancelAll()

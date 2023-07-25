@@ -34,8 +34,6 @@ import com.google.firebase.messaging.FirebaseMessaging
 
 class EggTimerFragment : Fragment() {
 
-    private val TOPIC = "breakfast"
-
     private lateinit var binding: FragmentEggTimerBinding
     private val viewModel: EggTimerViewModel by viewModels()
 
@@ -68,16 +66,7 @@ class EggTimerFragment : Fragment() {
         )
 
         // TODO: Step 3.4 call subscribe topics on start
-
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                return@addOnCompleteListener
-            }
-            val token = task.result
-            Log.d(TAG, "firebase token: $token")
-            Toast.makeText(context, token, Toast.LENGTH_SHORT).show()
-        }
+        subscribeTopic()
 
         return binding.root
     }
@@ -108,9 +97,20 @@ class EggTimerFragment : Fragment() {
     }
 
     // TODO: Step 3.3 subscribe to breakfast topic
+    private fun subscribeTopic() {
+        FirebaseMessaging.getInstance().subscribeToTopic(TOPIC)
+            .addOnCompleteListener { task ->
+                var msg = getString(R.string.message_subscribed)
+                if (!task.isSuccessful) {
+                    msg = getString(R.string.message_subscribe_failed)
+                }
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            }
+    }
 
     companion object {
         private const val TAG = "EggTimberFragment"
+        const val TOPIC = "Breakfast"
 
         fun newInstance() = EggTimerFragment()
     }
